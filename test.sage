@@ -3,9 +3,9 @@ load('eval.sage')
 from ctool import OpCount
 
 
-#k, A, p, l = 1, 52, 131, 19
-k, A, p, l = [9, 15, 23, 19]
-k, A, p, l = [11, 10, 29, 23]
+k, A, p, l = 1, 52, 131, 19
+#k, A, p, l = [9, 15, 23, 19]
+#k, A, p, l = [11, 10, 29, 23]
 #k, A, p, l = [3, 7, 23, 13]
 #k, A, p, l = [11, 57, 101, 23]
 
@@ -21,7 +21,7 @@ print("Point G: {}".format(G))
 Q = [E.random_point()]#generate_points(E, l-1)
 print("Points to eval: {}".format(Q))
 OpCount.clean()
-images = algorithm_1(G, Q, A, l)
+images, ker = algorithm_1(G, Q, A, l)
 print("algorithm_1 images: {}".format(images))
 OpCount.print_results()
 images = algorithm_2(G, Q, A, l)
@@ -37,7 +37,7 @@ OpCount.clean()
 t = K(2)
 
 m = (l-1)/2
-a = 5
+a = 4
 algorithm_4(G, l, m, a, A)
 OpCount.print_results()
 
