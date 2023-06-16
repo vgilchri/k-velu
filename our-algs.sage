@@ -83,7 +83,7 @@ def algorithm_1(G, eval_points, A, l):
 
     images = normalize_images(images, K)
 
-    return images
+    return images, kernel
 
 def algorithm_2(G, eval_points, A, l):
     hat_points = []
@@ -101,7 +101,7 @@ def algorithm_2(G, eval_points, A, l):
 
     for P in kernel:
         x_hat = P[0] + P[1]
-        z_hat = P[0] + P[1]
+        z_hat = P[0] - P[1]
         for i in range(n):
             t0, t1 = criss_cross(x_hat, z_hat, tmp_eval[i][0], tmp_eval[i][1])
             u_i = tmp_eval_prime[i][0]*t0

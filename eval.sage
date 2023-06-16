@@ -69,35 +69,24 @@ def evaluate_from_G_norm(p,k,G,A,l, eval_points, k_points):
     for i in range(n):
         U_hat = eval_points[i][0]+eval_points[i][1]
         V_hat = eval_points[i][0]-eval_points[i][1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
         tmp_eval.append([U_hat, V_hat])
         tmp_eval_prime.append([K(1), K(1)])
 
     for P in k_points:
         x_hat = P[0] + P[1]
-        z_hat = P[0] + P[1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
+        z_hat = P[0] - P[1]
         for i in range(n):
             t0, t1 = criss_cross(x_hat, z_hat, tmp_eval[i][0], tmp_eval[i][1])
             u_i = tmp_eval_prime[i][0]*t0
-            OpCount.op("mult", str(k))
             v_i = tmp_eval_prime[i][1]*t1
-            OpCount.op("mult", str(k))
             tmp_eval_prime[i] = [u_i, v_i]
-
     images = []
-    for i in range(len(eval_points)):
-        ui_prime, vi_prime = nor(eval_points[i][0], eval_points[i][1], k_points, k)
+    for i in range(len(tmp_eval_prime)):
+        ui_prime, vi_prime = nor(tmp_eval_prime[i][0], tmp_eval_prime[i][1], k_points, k)
         ui_prime = ui_prime**2
         vi_prime = vi_prime**2
-        OpCount.op("square", str(k))
-        OpCount.op("square", str(k))
         u_prime = eval_points[i][0] * ui_prime
         v_prime = eval_points[i][1] * vi_prime
-        OpCount.op("mult", str(k))
-        OpCount.op("mult", str(k))
         images.append([u_prime, v_prime])
     print(images)
     images = normalize_images(images, K)
