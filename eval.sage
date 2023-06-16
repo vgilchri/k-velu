@@ -27,13 +27,27 @@ def evaluate_from_G(p,k,G,A,l,P, k_points):
     return res
 
 
-def get_Norm(k, k_points, Px):
-    res = Px - k_points[0][0]
-    OpCount.op("add", str(k))
-    for i in range (1,len(k_points)) : #Multiplies all generators of Galois orbits
-        res=res*(Px-k_points[i][0])
-        OpCount.op("mult", str(k))
-        OpCount.op("add", str(k))
+def nor(U, V, S0, k):
+    Xs = []
+    Zs = []
+    for i in range(k):
+        OpCount.op("frob", str(k))
+        OpCount.op("frob", str(k))
+        for P in S0:
+            Px = pow(P[0], p**i)
+            Xs.append(Px)
+            Pz = pow(P[1], p**i)
+            Zs.append(Pz)
+    U_prime = K(1)
+    V_prime = K(1)
+    for i in range(0, len(Xs)):
+        U_prime = U_prime*Xs[i]
+        V_prime = V_prime*Zs[i]
+    return U_prime, V_prime
+
+
+
+def get_Norm(k, res):
     power = 1
     for i in range(1, k):
         power = power + pow(p, i)
@@ -75,9 +89,8 @@ def evaluate_from_G_norm(p,k,G,A,l, eval_points, k_points):
 
     images = []
     for i in range(len(eval_points)):
-        ui_prime = get_Norm(k, k_points, tmp_eval_prime[i][0])
+        ui_prime, vi_prime = nor(eval_points[i][0], eval_points[i][1], k_points, k)
         ui_prime = ui_prime**2
-        vi_prime = get_Norm(k, k_points, tmp_eval_prime[i][1])
         vi_prime = vi_prime**2
         OpCount.op("square", str(k))
         OpCount.op("square", str(k))

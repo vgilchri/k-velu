@@ -1,26 +1,26 @@
 from ctool import OpCount
 def xADD(P,Q,R):
 	# montgomery xADD
-	OpCount.op("xADD", str(k))
+	#OpCount.op("xADD", str(k))
 	xP,zP = P
 	xQ,zQ = Q
 	xR,zR = R
 	U = (xP-zP)*(xQ+zQ)
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("mult", str(k))
 	V = (xP+zP)*(xQ-zQ)
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("mult", str(k))
 	res1 = zR*((U+V)**2)
-	OpCount.op("square", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("mult", str(k))
 	res2 = xR*((U-V)**2)
-	OpCount.op("square", str(k))
-	OpCount.op("add", str(k))
 	OpCount.op("mult", str(k))
+	OpCount.op("mult", str(k))
+	OpCount.op("mult", str(k))
+	OpCount.op("mult", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("square", str(k))
+	OpCount.op("square", str(k))
 	if res2 == 0:
 		res1 = 1
 		res2 = 0
@@ -38,17 +38,15 @@ def xDBL(P,A):
 	t = xP*zP # T/4 from s.s. paper
 	r1 = R*S
 	r2 = 4*t*(S+(A+2)*t)
-	OpCount.op("xDBL", str(k))
 	OpCount.op("mult", str(k))
 	OpCount.op("mult", str(k))
-	OpCount.op("mult", str(k))
-	OpCount.op("mult", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
 	OpCount.op("square", str(k))
 	OpCount.op("square", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("C", str(k))
+	OpCount.op("add", str(k))
+	OpCount.op("add", str(k))
 	if r2 == 0:
 		r1 = 1
 		r2 = 0
