@@ -36,16 +36,23 @@ def algorithm_3(G, A, l):
 def algorithm_4(G, l, m, a, A):
     ''' We assume that l satisfies the condition'''
     b = int(m//a)
-    P = [K(1), K(1)]
-    kernel = [P for _ in range(((l-1)/2))]
-    for i in range(0, b-1):
+    kernel = []
+    for i in range(b):
+        idx = (a*i)
         if i == 0:
-            kernel[0] = G
+            kernel.append(G)
         else:
-            kernel[(a*i)+1] = xADD(kernel[(a*i)], kernel[(a*i)-1], kernel[(a*i)-1])
-        for j in range(1, a+1):
-            kernel[(a*i+j)] = xDBL(kernel[(a*i+j)-1], A)
+            T = kernel[idx]
+            T1 = kernel[idx-1]
+            P = xADD(T, T1, T1)
+            kernel.append(P)
+        for j in range(1, a):
+            tt = (idx+j)-1
+            T = kernel[tt]
+            P = xDBL(T, A)
+            kernel.append(P)
     return kernel
+
 
 def algorithm_1(G, eval_points, A, l):
     hat_points = []
@@ -159,7 +166,46 @@ def algorithm_1_using_alg4(G, eval_points, A, l):
     hat_points = []
     K = G[0].parent()
     m = (l-1)/2
-    a = 11
+    a = m
+    kernel = algorithm_4(G, l, m, a, A)
+    #print("Kernel alg 4:{} ".format(kernel))
+    for i in range(0, (l-1)/2):
+        x_hat = kernel[i][0] + kernel[i][1]
+        z_hat = kernel[i][0] - kernel[i][1]
+        OpCount.op("add", str(k))
+        OpCount.op("add", str(k))
+        hat_points.append([x_hat, z_hat])
+
+    images = []
+    for i in range(len(eval_points)):
+        u_hat = eval_points[i][0] + eval_points[i][1]
+        v_hat = eval_points[i][0] - eval_points[i][1]
+        OpCount.op("add", str(k))
+        OpCount.op("add", str(k))
+        u_prime = K(1)
+        v_prime = K(1)
+        for j in range(0, (l-1)/2):
+            t0, t1 = criss_cross(hat_points[j][0], hat_points[j][1], u_hat, v_hat)
+            u_prime = t0*u_prime
+            v_prime = t1*v_prime
+            OpCount.op("mult", str(k))
+            OpCount.op("mult", str(k))
+        u_prime = eval_points[i][0] * (u_prime**2)
+        v_prime = eval_points[i][1] * (v_prime**2)
+        OpCount.op("mult", str(k))
+        OpCount.op("mult", str(k))
+        OpCount.op("square", str(k))
+        OpCount.op("square", str(k))
+        images.append([u_prime, v_prime])
+    images = normalize_images(images, K)
+
+    return images, kernel
+
+def algorithm_6(G, eval_points, A, l):
+    hat_points = []
+    K = G[0].parent()
+    m = (l-1)/2
+    a = m
     kernel = algorithm_4(G, l, m, a, A)
     #print("Kernel alg 4:{} ".format(kernel))
     for i in range(0, (l-1)/2):

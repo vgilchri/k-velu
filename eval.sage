@@ -50,6 +50,7 @@ def nor(U, V, S0, k):
 def norm_c(t, p, k):
     res = t
     for i in range(k-1):
+        OpCount.op("frob", str(k))
         res = pow(res, p)
         res *= t
     return res
@@ -67,35 +68,48 @@ def evaluate_from_G_norm(p,k,G,A,l, eval_points, k_points):
     for i in range(n):
         U_hat = eval_points[i][0]+eval_points[i][1]
         V_hat = eval_points[i][0]-eval_points[i][1]
+        OpCount.op("add", str(k))
+        OpCount.op("add", str(k))
         tmp_eval.append([U_hat, V_hat])
         tmp_eval_prime.append([K(1), K(1)])
 
     for P in k_points:
         x_hat = P[0] + P[1]
         z_hat = P[0] - P[1]
+        OpCount.op("add", str(k))
+        OpCount.op("add", str(k))
         for i in range(n):
             t0, t1 = criss_cross(x_hat, z_hat, tmp_eval[i][0], tmp_eval[i][1])
             u_i = tmp_eval_prime[i][0]*t0
             v_i = tmp_eval_prime[i][1]*t1
+            OpCount.op("mult", str(k))
+            OpCount.op("mult", str(k))
             tmp_eval_prime[i] = [u_i, v_i]
     images = []
 
     Px=tmp_eval_prime[0][0]
     res=Px-k_points[0][0]
+    OpCount.op("add", str(k))
     for i in range (1,k): #Multiplies all generators of Galois orbits
         res=res*(Px-k_points[i][0])
+        OpCount.op("add", str(k))
     power=1
     U_i =  norm_c(res, p, k)
     Px = tmp_eval_prime[0][1]
     res=Px-k_points[0][1]
+    OpCount.op("add", str(k))
     for i in range (1,k): #Multiplies all generators of Galois orbits
         res=res*(Px-k_points[i][1])
+        OpCount.op("add", str(k))
     V_i =  norm_c(res, p, k)
     ui_prime = U_i**2
+    OpCount.op("square", str(k))
     vi_prime = V_i**2
+    OpCount.op("square", str(k))
     u_prime = eval_points[0][0] * ui_prime
     v_prime = eval_points[0][1] * vi_prime
+    OpCount.op("mult", str(k))
+    OpCount.op("mult", str(k))
     images.append([u_prime, v_prime])
-    print(images)
     images = normalize_images(images, K)
     return images

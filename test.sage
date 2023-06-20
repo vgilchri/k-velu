@@ -3,11 +3,13 @@ load('eval.sage')
 from ctool import OpCount
 
 
-k, A, p, l = 1, 52, 131, 19
+#k, A, p, l = 1, 52, 131, 19
+#k, A, p, l = [3, 8, 31, 19]
 #k, A, p, l = [9, 15, 23, 19]
-#k, A, p, l = [11, 10, 29, 23]
-#k, A, p, l = [3, 7, 23, 13]
+k, A, p, l = [11, 10, 29, 23]
 #k, A, p, l = [11, 57, 101, 23]
+#k, A, p, l = [1, 3, 43, 13]
+#k, A, p, l = [3, 7, 23, 13]
 
 
 
@@ -32,12 +34,14 @@ print("algorithm_1_using_alg3 images: {}".format(images))
 images, kernel = algorithm_1_using_alg4(G, Q, A, l)
 
 print("algorithm_1_using_alg4 images: {}".format(images))
+OpCount.clean()
+d = (l-1)/2
+kernel_points(G, A, d)
+OpCount.print_results()
 
 OpCount.clean()
-t = K(2)
-
 m = (l-1)/2
-a = 4
+a = m
 algorithm_4(G, l, m, a, A)
 OpCount.print_results()
 
