@@ -239,3 +239,63 @@ def algorithm_6(G, eval_points, A, l):
     images = normalize_images(images, K)
 
     return images, kernel
+
+def algorithm_5(G, a_l, b_k, A):
+    kern = []
+    for i in range(b_k):
+        if i == 0:
+            kern.append(G)
+        else:
+            P = xADD(kern[a_l*i], kern[(a_l*i)-1], kern[(a_l*i)-1])
+            kern.append(P)
+        for j in range(1, a_l+1):
+            T = xDBL(kern[((a_l*i)+j)-1], A)
+            kern.append(T)
+    return kern
+
+def c_norm(alpha, k, q):
+    t = copy(alpha)
+    for i in range(k):
+        t = (t**q) * alpha
+        OpCount.op("mult", str(k))
+        OpCount.op("frob", str(k))
+
+    return t
+
+def algorithm_7(G, l, k, eval_points, A, a_l, b_k, p):
+    K = G[0].parent()
+
+    kern_point = algorithm_5(G, a_l, b_k, A)
+
+    hat_points = []
+    for P in kern_point:
+        X_hat = P[0] + P[1]
+        Z_hat = P[0] - P[1]
+        OpCount.op("add", str(k))
+        OpCount.op("add", str(k))
+        hat_points.append([X_hat, Z_hat])
+
+    images = []
+    for Q in eval_points:
+        U_hat = Q[0] + Q[1]
+        V_hat = Q[0] - Q[1]
+        OpCount.op("add", str(k))
+        OpCount.op("add", str(k))
+        U_prime = K(1)
+        V_prime = K(1)
+        for H in hat_points:
+            t0,t1 = criss_cross(H[0], H[1], U_hat, V_hat)
+            U_prime = t0*U_primes
+            V_prime = t1*V_prime
+            OpCount.op("mult", str(k))
+            OpCount.op("mult", str(k))
+        U_prime = c_norm(U_prime, k, p)
+        V_prime = c_norm(V_prime, k, p)
+        U_prime = U_prime**2
+        V_prime = V_prime**2
+        U_prime = Q[0]*U_prime
+        V_prime = Q[1]*V_prime
+        images.append([U_prime, V_prime])
+
+    normalize_images(images, K)
+    return images
