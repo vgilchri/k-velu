@@ -9,18 +9,18 @@ def xADD(P,Q,R):
 	V = (xP+zP)*(xQ-zQ)
 	res1 = zR*((U+V)**2)
 	res2 = xR*((U-V)**2)
-	OpCount.op("mult", str(k))
-	OpCount.op("mult", str(k))
-	OpCount.op("mult", str(k))
-	OpCount.op("mult", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("square", str(k))
-	OpCount.op("square", str(k))
+	OpCount.op("M", str(k))
+	OpCount.op("M", str(k))
+	OpCount.op("M", str(k))
+	OpCount.op("M", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("S", str(k))
+	OpCount.op("S", str(k))
 	if res2 == 0:
 		res1 = 1
 		res2 = 0
@@ -38,15 +38,15 @@ def xDBL(P,A):
 	t = xP*zP # T/4 from s.s. paper
 	r1 = R*S
 	r2 = 4*t*(S+(A+2)*t)
-	OpCount.op("mult", str(k))
-	OpCount.op("mult", str(k))
-	OpCount.op("square", str(k))
-	OpCount.op("square", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
+	OpCount.op("M", str(k))
+	OpCount.op("M", str(k))
+	OpCount.op("S", str(k))
+	OpCount.op("S", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
 	OpCount.op("C", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
 	if r2 == 0:
 		r1 = 1
 		r2 = 0
@@ -60,11 +60,11 @@ def criss_cross(a,b,c,d):
 	# performs a small computation on the inputs
 	# cost: 2M + 2a
 	t1 = a*d
-	OpCount.op("mult", str(k))
+	OpCount.op("C", str(k))
 	t2 = b*c
-	OpCount.op("mult", str(k))
-	OpCount.op("add", str(k))
-	OpCount.op("add", str(k))
+	OpCount.op("C", str(k))
+	OpCount.op("A", str(k))
+	OpCount.op("A", str(k))
 	return (t1+t2, t1-t2)
 
 #def kernel_points(P, A, d):
@@ -84,7 +84,7 @@ from ctool import OpCount
 
 # Normal point-finding algo
 
-def point_finding(A,p,l,k):
+def point_finding(A,p,l,k, N):
 # checks
     if (l-1 % k == 0):
         return "k ne divise pas l-1"
@@ -95,7 +95,6 @@ def point_finding(A,p,l,k):
     # sample a random point
     E = EllipticCurve(K, [0, A, 0, 1, 0])
     P_l =E.random_point()
-    N = E.order()
     if N % l**2 == 0:
         t = N // l**2
         OpCount.op("div", str(k))
