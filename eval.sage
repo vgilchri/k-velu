@@ -94,5 +94,5 @@ def evaluate_from_G_norm(p,k,G,A,l, eval_points, k_points):
         V_prime = Q[1]*V_prime
         OpCount.op("C", str(k))
         images.append([U_prime, V_prime])
-    normalize_images(images, K)
+    images = normalize_images(images, K)
     return images
