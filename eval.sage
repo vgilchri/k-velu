@@ -47,14 +47,14 @@ def nor(U, V, S0, k):
 
 
 
-def norm_c(t, p, k):
-    res = t
+def norm_c(alpha, p, k):
+    t = copy(alpha)
     for i in range(k-1):
-        OpCount.op("frob", str(k))
-        res = pow(res, p)
-        res *= t
-    return res
+        t = (t**q) * alpha
+        OpCount.op("M", str(k))
+        OpCount.op("F", str(k))
 
+    return t
 
 def evaluate_from_G_norm(p,k,G,A,l, eval_points, k_points):
     '''
@@ -62,54 +62,37 @@ def evaluate_from_G_norm(p,k,G,A,l, eval_points, k_points):
      ****** WE are assuming k odd ****
      k_points is the S0
      '''
-    tmp_eval = []
-    tmp_eval_prime = []
-    n = len(eval_points)
-    for i in range(n):
-        U_hat = eval_points[i][0]+eval_points[i][1]
-        V_hat = eval_points[i][0]-eval_points[i][1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
-        tmp_eval.append([U_hat, V_hat])
-        tmp_eval_prime.append([K(1), K(1)])
-
+    hat_points = []
     for P in k_points:
-        x_hat = P[0] + P[1]
-        z_hat = P[0] - P[1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
-        for i in range(n):
-            t0, t1 = criss_cross(x_hat, z_hat, tmp_eval[i][0], tmp_eval[i][1])
-            u_i = tmp_eval_prime[i][0]*t0
-            v_i = tmp_eval_prime[i][1]*t1
-            OpCount.op("mult", str(k))
-            OpCount.op("mult", str(k))
-            tmp_eval_prime[i] = [u_i, v_i]
+        X_hat = P[0] + P[1]
+        Z_hat = P[0] - P[1]
+        OpCount.op("A", str(k))
+        OpCount.op("A", str(k))
+        hat_points.append([X_hat, Z_hat])
     images = []
-
-    Px=tmp_eval_prime[0][0]
-    res=Px-k_points[0][0]
-    OpCount.op("add", str(k))
-    for i in range (1,k): #Multiplies all generators of Galois orbits
-        res=res*(Px-k_points[i][0])
-        OpCount.op("add", str(k))
-    power=1
-    U_i =  norm_c(res, p, k)
-    Px = tmp_eval_prime[0][1]
-    res=Px-k_points[0][1]
-    OpCount.op("add", str(k))
-    for i in range (1,k): #Multiplies all generators of Galois orbits
-        res=res*(Px-k_points[i][1])
-        OpCount.op("add", str(k))
-    V_i =  norm_c(res, p, k)
-    ui_prime = U_i**2
-    OpCount.op("square", str(k))
-    vi_prime = V_i**2
-    OpCount.op("square", str(k))
-    u_prime = eval_points[0][0] * ui_prime
-    v_prime = eval_points[0][1] * vi_prime
-    OpCount.op("mult", str(k))
-    OpCount.op("mult", str(k))
-    images.append([u_prime, v_prime])
-    images = normalize_images(images, K)
+    for Q in eval_points:
+        U_hat = Q[0] + Q[1]
+        V_hat = Q[0] - Q[1]
+        OpCount.op("A", str(k))
+        OpCount.op("A", str(k))
+        U_prime = K(1)
+        V_prime = K(1)
+        for H in hat_points:
+            t0,t1 = criss_cross(H[0], H[1], U_hat, V_hat)
+            U_prime = t0*U_prime
+            V_prime = t1*V_prime
+            OpCount.op("M", str(k))
+            OpCount.op("M", str(k))
+        U_prime = c_norm(U_prime, k, p)
+        V_prime = c_norm(V_prime, k, p)
+        U_prime = U_prime**2
+        V_prime = V_prime**2
+        OpCount.op("S", str(k))
+        OpCount.op("S", str(k))
+        U_prime = Q[0]*U_prime
+        OpCount.op("C", str(k))
+        V_prime = Q[1]*V_prime
+        OpCount.op("C", str(k))
+        images.append([U_prime, V_prime])
+    normalize_images(images, K)
     return images

@@ -135,28 +135,30 @@ def algorithm_1_using_alg3(G, eval_points, A, l):
     for i in range(0, (l-1)/2):
         x_hat = kernel[i][0] + kernel[i][1]
         z_hat = kernel[i][0] - kernel[i][1]
+        OpCount.op("A", str(k))
+        OpCount.op("A", str(k))
         hat_points.append([x_hat, z_hat])
 
     images = []
     for i in range(len(eval_points)):
         u_hat = eval_points[i][0] + eval_points[i][1]
         v_hat = eval_points[i][0] - eval_points[i][1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
+        OpCount.op("A", str(k))
+        OpCount.op("A", str(k))
         u_prime = K(1)
         v_prime = K(1)
         for j in range(0, (l-1)/2):
             t0, t1 = criss_cross(hat_points[j][0], hat_points[j][1], u_hat, v_hat)
             u_prime = t0*u_prime
             v_prime = t1*v_prime
-            OpCount.op("mult", str(k))
-            OpCount.op("mult", str(k))
+            OpCount.op("M", str(k))
+            OpCount.op("M", str(k))
         u_prime = eval_points[i][0] * (u_prime**2)
         v_prime = eval_points[i][1] * (v_prime**2)
-        OpCount.op("mult", str(k))
-        OpCount.op("mult", str(k))
-        OpCount.op("square", str(k))
-        OpCount.op("square", str(k))
+        OpCount.op("C", str(k))
+        OpCount.op("C", str(k))
+        OpCount.op("S", str(k))
+        OpCount.op("S", str(k))
         images.append([u_prime, v_prime])
     images = normalize_images(images, K)
 
@@ -195,7 +197,7 @@ def algorithm_1_using_alg4(G, eval_points, A, l):
         OpCount.op("C", str(k))
         OpCount.op("C", str(k))
         OpCount.op("S", str(k))
-        OOpCount.op("S", str(k))
+        OpCount.op("S", str(k))
         images.append([u_prime, v_prime])
     images = normalize_images(images, K)
 
@@ -211,30 +213,30 @@ def algorithm_6(G, eval_points, A, l):
     for i in range(0, (l-1)/2):
         x_hat = kernel[i][0] + kernel[i][1]
         z_hat = kernel[i][0] - kernel[i][1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
+        OpCount.op("A", str(k))
+        OpCount.op("A", str(k))
         hat_points.append([x_hat, z_hat])
 
     images = []
     for i in range(len(eval_points)):
         u_hat = eval_points[i][0] + eval_points[i][1]
         v_hat = eval_points[i][0] - eval_points[i][1]
-        OpCount.op("add", str(k))
-        OpCount.op("add", str(k))
+        OpCount.op("A", str(k))
+        OpCount.op("A", str(k))
         u_prime = K(1)
         v_prime = K(1)
         for j in range(0, (l-1)/2):
             t0, t1 = criss_cross(hat_points[j][0], hat_points[j][1], u_hat, v_hat)
             u_prime = t0*u_prime
             v_prime = t1*v_prime
-            OpCount.op("mult", str(k))
-            OpCount.op("mult", str(k))
+            OpCount.op("M", str(k))
+            OpCount.op("M", str(k))
         u_prime = eval_points[i][0] * (u_prime**2)
         v_prime = eval_points[i][1] * (v_prime**2)
-        OpCount.op("mult", str(k))
-        OpCount.op("mult", str(k))
-        OpCount.op("square", str(k))
-        OpCount.op("square", str(k))
+        OpCount.op("C", str(k))
+        OpCount.op("C", str(k))
+        OpCount.op("S", str(k))
+        OpCount.op("S", str(k))
         images.append([u_prime, v_prime])
     images = normalize_images(images, K)
 

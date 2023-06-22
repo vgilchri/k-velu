@@ -22,12 +22,12 @@ print("Points to eval: {}".format(Q))
 print("Computing l :{}".format(l))
 OpCount.clean()
 images, ker = algorithm_1(G, Q, A, l)
-print("algorithm_1 images: {}".format(images))
+#print("algorithm_1 images: {}".format(images))
 OpCount.print_results()
 
 OpCount.clean()
 a_l = 3
 b_k = 1
 images = algorithm_7(G, l, k, Q, A, a_l, b_k, p)
-print("algorithm_7 images: {}".format(images))
+#print("algorithm_7 images: {}".format(images))
 OpCount.print_results()
