@@ -304,5 +304,5 @@ def algorithm_7(G, l, k, eval_points, A, a_l, b_k, p):
         OpCount.op("C", str(k))
         images.append([U_prime, V_prime])
 
-    normalize_images(images, K)
+    images = normalize_images(images, K)
     return images
