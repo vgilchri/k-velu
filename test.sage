@@ -6,7 +6,7 @@ from ctool import OpCount
 #k, A, p, l = 1, 52, 131, 19
 k, A, p, l = [3, 8, 31, 19]
 #k, A, p, l = [9, 15, 23, 19]
-#k, A, p, l = [11, 10, 29, 23]
+#k, A, p, l = [1, 25, 79, 23]
 #k, A, p, l = [11, 57, 101, 23]
 #k, A, p, l = [1, 3, 43, 13]
 #k, A, p, l = [3, 7, 23, 13]
@@ -38,20 +38,6 @@ print("algorithm_1_using_alg3 images: {}".format(images))
 images, kernel = algorithm_1_using_alg4(G, Q, A, l)
 
 print("algorithm_1_using_alg4 images: {}".format(images))
-OpCount.clean()
-
-OpCount.print_results()
-
-OpCount.clean()
-m = (l-1)/2
-a = m
-algorithm_4(G, l, m, a, A)
-OpCount.print_results()
-
-images = evaluate_from_G_norm(p,k,G,A,l, Q, kernel)
-print("evaluate_from_G_norm images: {}".format(images))
-OpCount.print_results()
-
 OpCount.clean()
 
 K_t = GF(l)
