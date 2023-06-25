@@ -55,5 +55,5 @@ a_lk = (r_p)/(gcd(r_p, k_p))
 b_lk = c_f /a_lk
 
 images =algorithm_7(G, l, k, Q, A, a_lk, b_lk, p)
-print("evaluate_from_G_norm images: {}".format(images))
+print("algorithm_7 images: {}".format(images))
 OpCount.print_results()
